@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@font-face {
+          font-family: "Brandon";
+          src: url("./fonts/Brandon_bld.otf");
+        }
+@font-face {
+  font-family: "Brandon-black";
+  src: url("./fonts/transat_black-webfont.ttf");
+}
+:root {
+    /* rojo */
+    /* --primary-color: #ff1e00;
+    --secondary-color: #7c0606; */
+    /* azul */
+    --primary-color: #4682b4;
+    --secondary-color: rgb(27, 71, 107);
+    /* morado */
+    /* --primary-color: #524D9E;
+    --secondary-color: #38346B; */
+    /* COLORS */
+    --accent-color: #fff;
+    --font-color: #727171;
+    --menu-color: #1c1c1c;
+    --font-title-color: #000;
+    /* FONT FAMILYS */
+    --header-font: 'Anton', sans-serif;
+    --body-font: 'Roboto', sans-serif;
+    /* TEXT WEIGHTS */
+    --normal-weight: 400;
+    --bold-weight: 500;
+    --header-height: 10vh;
+    /* MENU WIDTH */
+    --menu-width: 20%;
+    /* FONT SIZES */
+    --f-title-font-size: 2rem;
+    --f-subtitle-font-size: 1.5rem;
+    --f-normal-font-size: 1rem;
+    --margin: 1rem;
+    --margin-top: 2rem;
+    /* FORM SIZES */
+    --form-width: 25rem;
+    --form-height: 21rem;
+    --form-input-height: 2.5rem;
+    /*PADDINGS*/
+    --padding-botones-generales: 0.5rem;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: var(--body-font);
+}
+
+body {
+    overflow-x: hidden;
+}
+
+#btn-user {
+    cursor: pointer;
+}
+
+.left a {
+    text-decoration: none;
+}
+
+.pseudo-body {
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-div {
+    width: 95%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contenido {
+    text-align: center;
+    width: 100vw;
+}
+
+.main-header {
+    background-color: var(--primary-color);
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    width: 100%;
+}
+
+.main-header .left h1 {
+    color: var(--accent-color);
+    font-size: 4vh;
+    font-weight: var(--bold-weight);
+}
+.main-header .left a h1 {
+    color: var(--accent-color);
+    font-size: 4vh;
+    font-weight: var(--bold-weight);
+}
+
+.main-header .right i {
+    font-size: 5vh;
+    color: var(--accent-color);
+}
+
+.main-header .right {
+    margin-right: 15px;
+}
+
+.main-header .left i {
+    font-size: 4vh;
+    color: var(--accent-color);
+    margin: 0 15px;
+    cursor: pointer;
+}
+
+.main-header .left,
+.main-header .right {
+    display: flex;
+    align-items: center;
+}
+
+.user-window {
+    background-color: var(--menu-color);
+    color: var(--accent-color);
+    padding: 5px;
+    border: 1px solid #000;
+    position: absolute;
+    top: var(--header-font);
+    right: 0;
+    transition: all 500ms ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    z-index: -1;
+}
+
+
+/* menu */
+
+.container-menu {
+    position: absolute;
+    width: 100%;
+    height: 90%;
+    bottom: 0;
+    left: 0;
+    transition: all 500ms ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.cont-menu {
+    width: 100%;
+    max-width: var(--menu-width);
+    background: var(--menu-color);
+    height: 100%;
+    position: relative;
+    transition: all 500ms ease;
+    transform: translateX(-100%);
+}
+
+.cont-menu nav {
+    transform: translateY(15%);
+}
+
+.cont-menu nav a {
+    display: block;
+    text-decoration: none;
+    padding: 20px;
+    color: var(--accent-color);
+    border-left: 5px solid transparent;
+    transition: all 400ms ease;
+}
+
+.cont-menu nav a {
+    font-size: 2.5vh;
+}
+
+.cont-menu nav a i {
+    font-size: 3vh;
+}
+
+.cont-menu nav a:hover {
+    border-left: 5px solid #c7c7c7;
+    background: #1f1f1f;
+}
+
+.cont-menu label {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+
+/* FLOAT */
+
+
+/* LOGIN */
+
+
+/* FONTS */
+
+.f-title {
+    color: var(--font-title-color);
+    font-size: var(--f-title-font-size);
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+    margin-top: 5vh;
+}
+
+.f-subtitle {
+    color: var(--primary-color);
+    font-size: var(--f-subtitle-font-size);
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+}
+
+.f-normal {
+    color: var(--font-color);
+    font-weight: var(--normal-weight);
+    font-size: var(--f-normal-font-size);
+}
+
+.f-link {
+    color: var(--primary-color);
+    font-size: var(--f-normal-font-size);
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+    text-align: right;
+}
+
+
+/* FORM */
+
+.login-form {
+    width: var(--form-width);
+    height: var(--form-height);
+    margin-top: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid var(--font-color);
+}
+
+.login-form .up {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.login-form .text-field {
+    width: 80%;
+    color: var(--font-color);
+    font-weight: var(--normal-weight);
+    font-size: var(--f-normal-font-size);
+    height: var(--form-input-height);
+    border: 1px solid var(--font-color);
+    margin-bottom: var(--margin);
+    padding: 0 5px;
+}
+
+.login-form label {
+    width: 80%;
+    margin-bottom: 0.5rem;
+}
+
+.login-form .f-subtitle {
+    width: 80%;
+    margin-top: var(--margin);
+    margin-bottom: var(--margin);
+}
+
+.login-form .f-link {
+    width: 80%;
+    margin-bottom: var(--margin);
+}
+
+.principal-button {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    border: 0;
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+    height: 3rem;
+    width: 100%;
+}
+
+
+/* HOVERS */
+
+.principal-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.login-form .text-field:focus {
+    border: 1px solid var(--primary-color);
+}
+
+
+/* BOTON */
+
+.boton {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    border: 0;
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+    height: 1.5rem;
+    padding: 0 1rem;
+}
+
+.boton-generico {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    border: 0;
+    font-family: var(--body-font);
+    font-weight: var(--bold-weight);
+    padding: var(--padding-botones-generales);
+    border-radius: 4px;
+}

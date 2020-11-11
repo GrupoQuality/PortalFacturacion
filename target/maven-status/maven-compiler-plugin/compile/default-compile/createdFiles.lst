@@ -1,0 +1,4 @@
+PdfResources\PdfGenerator.class
+com\mx\proyecto\controller\Rooter.class
+com\mx\proyecto\controller\FacturasController.class
+com\mx\proyecto\dao\ConsultaFactura.class
