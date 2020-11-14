@@ -27,24 +27,17 @@
         table.style.setProperty('width',`${100}%`)
         validar()
     }
-    
+    let pdfNameToDelete = ""
     function validar(){
         let vfolio = ""
         var myTable = $('#tabla-facturas').DataTable();
         myTable.on('click','i',function() {
             var rowData = myTable.row($(this).parents('tr')).data();            
             vfolio = rowData.Folio_Fiscal
-//            alert(typeof vfolio)    
-            if(vfolio == ""){
-
-            }
-            else {
-//                alert("antes de pdf: " + vfolio)
-                generatePdf(vfolio)
-                const openModal = document.getElementById("open-modal-pdf");
-                const pdfObjectContainer = document.getElementById("object-pdf-container");
-//                pdfObjectContainer.setAttribute('data','${pageContext.request.contextPath}/pdfs/pdf.pdf')
-                setTimeout(()=>{openModal.click()},2000)                
+            
+            if(vfolio != ""){
+//                borrarPdf(pdfNameToDelete);
+                generatePdf(vfolio);      
             }
         });                
     }
@@ -57,6 +50,51 @@
             url : 'generarPdf.do',
             type : "POST",
             data: {fc_factura},
+            beforeSend : function(xhr) {
+            },
+            success : function(jsonResponse, textStatus, jqXHR) {
+                let pdfName = "";
+                console.log("ya regreso del controlador")
+                const loadPdf =async(name)=>{
+                    pdfNameToDelete = pdfName;
+                    pdfName = await jsonResponse;
+                    console.log("termino de conseguir el nombre")
+                }
+                loadPdf().then(()=>{
+                    addOpenModalBody(pdfName);
+                    console.log("carga el pdf al modal")
+                })
+            },
+            error : function(jqXHR, textStatus, errorThrown) {
+            }
+        });
+    }
+    
+    function addOpenModalBody(pdfName){  
+        
+        const openModal = document.getElementById("open-modal-pdf");
+//        document.getElementById("modal-body").innerHTML = "";
+        document.getElementById("modal-body").innerHTML  += ""+
+        `<object data='/PortalFacturasLubriagsa/pdfs/${pdfName}.pdf' type='application/pdf' width='100%' height='400' id='object-pdf-container'>`+
+//             `<a href='/PortalFacturasLubriagsa/pdfs/${pdfName}.pdf'>pdf.pdf</a>` +
+             `<p>error</p>`+
+        `</object>` +
+        `<div id="botones-factura">`+
+            `<a href="/PortalFacturasLubriagsa/pdfs/${pdfName}.pdf" download rel="noopener noreferrer" target="_blank">`+
+                `<button  class="btn boton-generico" > PDF </button>`+
+            `</a>`+
+            `<button  class="btn boton-generico" > XML </button>  `+
+        `</div>`;
+        openModal.click() 
+//        return 0;
+    }
+    function borrarPdf(filePath){
+        let name = filePath
+//        name = fileName;
+        $.ajax({
+            url : 'borrarPdf.do',
+            type : "POST",
+            data: {name},
             beforeSend : function(xhr) {
             },
             success : function(jsonResponse, textStatus, jqXHR) {
