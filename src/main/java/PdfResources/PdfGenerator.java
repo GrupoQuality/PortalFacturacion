@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package PdfResources;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
@@ -26,11 +25,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 public class PdfGenerator {
         final String fontsPath = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/fonts";
         final String logo = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\img/logo-lubriagsa.png";
-        final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/pdf.pdf";
+        final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/";
+//        final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/pdf.pdf";
         
         BaseFont brandonBold;
         BaseFont brandonMedium;
@@ -71,18 +74,54 @@ public class PdfGenerator {
         return f;
     }
     
-    public void buildPdf(String folioFiscal) throws DocumentException, BadElementException, IOException{
-        folioFiscal = "1345324";//prueba
+    public String buildPdf(List<Map<String,Object>> facturaParteUno, List<Map<String,Object>> numeroConceptos, List<Map<String,Object>> facturaParteDos) throws DocumentException, BadElementException, IOException{System.out.println("entro a buildpdf");
+        //VARIABLES PARA LLENAR LA FACTURA           
+        String emRazonSocial = String.valueOf(facturaParteUno.get(0).get("Em_Razon_Social")),
+               emRFC= String.valueOf(facturaParteUno.get(0).get("Em_R_F_C")),
+               emCveRegimenFiscal = String.valueOf(facturaParteUno.get(0).get("Em_Cve_Regimen_Fiscal")),
+               sucursal = String.valueOf(facturaParteUno.get(0).get("Sc_Descripcion")),
+               scDireccion1 = String.valueOf(facturaParteUno.get(0).get("Sc_Direccion_1")),
+               scDireccion2 = String.valueOf(facturaParteUno.get(0).get("Sc_Direccion_2")),
+               scDireccion3 = String.valueOf(facturaParteUno.get(0).get("Sc_Direccion_3")),
+               telefono1 = String.valueOf(facturaParteUno.get(0).get("Sc_Telefono_1")),
+               telefono2 = String.valueOf(facturaParteUno.get(0).get("Sc_Telefono_2")),
+               telefono3 = String.valueOf(facturaParteUno.get(0).get("sc_telefono_3")),
+               folioFiscal = String.valueOf(facturaParteUno.get(0).get("Cd_Documento")),
+               nombre = String.valueOf(facturaParteUno.get(0).get("Cl_Razon_Social")),
+               RFC = String.valueOf(facturaParteUno.get(0).get("Cl_R_F_C")),
+               calle = String.valueOf(facturaParteUno.get(0).get("Cl_Direccion_1")),
+               colonia = String.valueOf(facturaParteUno.get(0).get("Cl_Direccion_2")),
+               municipio = String.valueOf(facturaParteUno.get(0).get("cl_ciudad")),
+               estado = String.valueOf(facturaParteUno.get(0).get("cl_estado")),
+               pais = String.valueOf(facturaParteUno.get(0).get("Cl_Pais")),
+               cp = String.valueOf(facturaParteUno.get(0).get("cl_direccion_3")),
+               vendedor = String.valueOf(facturaParteUno.get(0).get("Vn_Descripcion")),
+               noDeCertificadoDelCSD = String.valueOf(facturaParteUno.get(0).get("Cd_Numero_Serie_Certificado")),
+               lugarHoraFechaEmision = String.valueOf(facturaParteUno.get(0).get("Cd_Timbre_Fecha")),
+               cFactura = String.valueOf(facturaParteUno.get(0).get("Fc_Factura")),
+               moneda = String.valueOf(facturaParteUno.get(0).get("Mn_Cve_Moneda")),
+               usoCFDI = String.valueOf(facturaParteUno.get(0).get("Fc_Condicion_Venta")),
+               folio = String.valueOf(facturaParteUno.get(0).get("Fc_Folio")),
+               tipoCambio = String.valueOf(facturaParteUno.get(0).get("Fc_Tipo_Cambio")),
+               fecha = String.valueOf(facturaParteUno.get(0).get("Fc_Fecha"));
+        
+        System.out.println("emRazon--> " + emRazonSocial);
+             
+               
+    
+//        String folioFiscal = "1345324";//prueba
+//        int sucursal = 001;
         float afterSpacing = 10f;
         float beforeSpacing = 10f;
-//        FONTS
-
+        
+//        CONSULTAR LA BASE DE DATOS        
+        
         //Crear imagen
         Image image1 = Image.getInstance(logo);
         
             Paragraph lubriagsa = new Paragraph();
-            lubriagsa.add(new Chunk("LUBRIAGSA SA DE CV\n" +
-            "LUB0004283C4", fBlack));
+            lubriagsa.add(new Chunk(emRazonSocial+"\n" +
+            emRFC, fBlack));
         
         Paragraph enter = new Paragraph();
         enter.add("\n");
@@ -101,6 +140,16 @@ public class PdfGenerator {
         pFolioFiscal.setSpacingBefore(beforeSpacing);
         pFolioFiscal.setAlignment(Element.ALIGN_LEFT);
         
+        
+        Paragraph pCuentas = new Paragraph();
+        pCuentas.add(new Chunk("CUENTAS BANCARIAS LUBRIAGSA\n",fRegular));
+        pCuentas.add(new Chunk("BBVA: CTA: 0452754177 CLAVE: 012320004527541774\n",fRegularGris));
+        pCuentas.add(new Chunk("BANAMEX: CTA: 3155487 CLAVE: 002320031554870530\n",fRegularGris));
+        pCuentas.add(new Chunk("BANORTE: CTA: 0602682747 CLAVE: 072320006026827474\n",fRegularGris));
+        pCuentas.setSpacingAfter(afterSpacing);
+        pCuentas.setSpacingBefore(beforeSpacing);
+        pCuentas.setAlignment(Element.ALIGN_RIGHT);
+        
         Paragraph pDatosCliente = new Paragraph();
         pDatosCliente.add(new Chunk("DATOS CLIENTE",fRegular));
         pDatosCliente.setSpacingAfter(afterSpacing);
@@ -115,13 +164,20 @@ public class PdfGenerator {
         
         
         Paragraph direccionLubriagsa = new Paragraph();
-        direccionLubriagsa.add(new Chunk("601 – General de Ley Personas Morales\n" +
-        "Avenida Lázaro Cárdenas\n" +
-        "Col. Las Torres\n" +
-        "Guadalajara C.P. 44920, Jalisco",fRegular));
+        direccionLubriagsa.add(new Chunk(emCveRegimenFiscal+"\n" +
+        "Sucursal    "+sucursal+"\n" +
+        scDireccion1 + "\n" +
+        scDireccion2 + "\n" +
+        scDireccion3 + "\n" +
+        "Tel.    "+telefono1+"/"+telefono2+"/"+telefono3+"/",fRegular));
         
+        long unixDate = 0;
+        unixDate = Instant.now().getEpochSecond();
+        System.out.println("HORA UNIX: " + unixDate);
+         
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(dest));
+        PdfWriter.getInstance(document, new FileOutputStream(dest+unixDate+".pdf"));
+//        PdfWriter.getInstance(document, new FileOutputStream(dest));
         document.open();
         // Create a Simple table
         PdfPTable table = new PdfPTable(3);
@@ -150,34 +206,35 @@ public class PdfGenerator {
         // Set First row as header
         tDatosCliente.setHeaderRows(7);
         
-        tDatosCliente.addCell(generatePhrases("Nombre", "TRACTO PARTES SA DE CV"));
-        tDatosCliente.addCell(generatePhrases("No. de certificado del CSD", "0000AAABBBCCCDD1111"));
-        tDatosCliente.addCell(generatePhrases("R.F.C.", "XAXX010101000"));
-        tDatosCliente.addCell(generatePhrases("Lugar, hora y fecha de emisión", "XAXX010101000"));
-        tDatosCliente.addCell(generatePhrases("Calle", "Nombre Calle"));
-        tDatosCliente.addCell(generatePhrases("Factura", "Numerofactura"));
-        tDatosCliente.addCell(generatePhrases("Colonia", "Centro"));
-        tDatosCliente.addCell(generatePhrases("Moneda", "MXN"));
-        tDatosCliente.addCell(generatePhrases("Municipio", "Zapopan"));
-        tDatosCliente.addCell(generatePhrases("Uso CFDI", "Zapopan"));
+        tDatosCliente.addCell(generatePhrases("Nombre", nombre));
+        tDatosCliente.addCell(generatePhrases("No. de certificado del CSD", noDeCertificadoDelCSD ));
+        tDatosCliente.addCell(generatePhrases("R.F.C.", RFC));
+        tDatosCliente.addCell(generatePhrases("Lugar, hora y fecha de emisión", lugarHoraFechaEmision));
+        tDatosCliente.addCell(generatePhrases("Calle", calle));
+        tDatosCliente.addCell(generatePhrases("Factura", cFactura));
+        tDatosCliente.addCell(generatePhrases("Colonia", colonia));
+        tDatosCliente.addCell(generatePhrases("Moneda", moneda));
+        tDatosCliente.addCell(generatePhrases("Municipio", municipio));
+        tDatosCliente.addCell(generatePhrases("Uso CFDI", usoCFDI));
         
-        tDatosCliente.addCell(paisEstadoCell());
+        tDatosCliente.addCell(paisEstadoCell(estado, pais));
         
-        tDatosCliente.addCell(generatePhrases("Folio", "1365461258"));
-        tDatosCliente.addCell(generatePhrases("C.P.", "45100"));
-        tDatosCliente.addCell(generatePhrases("Tipo de cambio", "45100"));
-        tDatosCliente.addCell(generatePhrases("Vendedor", "Sin vendedor"));
-        tDatosCliente.addCell(generatePhrases("Fecha", "09/11/2020"));
+        tDatosCliente.addCell(generatePhrases("Folio", folio));
+        tDatosCliente.addCell(generatePhrases("C.P.", cp));
+        tDatosCliente.addCell(generatePhrases("Tipo de cambio", tipoCambio));
+        tDatosCliente.addCell(generatePhrases("Vendedor", vendedor));
+        tDatosCliente.addCell(generatePhrases("Fecha", fecha));
         
         
         
 //            OBSERVACIONES TABLA 1
-        PdfPTable obsTabla1 = new PdfPTable(8);
+        PdfPTable obsTabla1 = new PdfPTable(9);
         obsTabla1.getDefaultCell().setBorderWidth(0f);        
         obsTabla1.setWidthPercentage(100);
         // Set First row as header
         obsTabla1.setHeaderRows(0);//Este numero es el numero de filas que agregaras -1 OJO DEBES AGREGAR TODAS LAS FILAS Y COLUMNAS PARA QUE JALE
         // Add the data
+        obsTabla1.addCell(new Paragraph("Clave Sat",fRegular));
         obsTabla1.addCell(new Paragraph("Clave",fRegular));
         obsTabla1.addCell(new Paragraph("Cantidad",fRegular));
         obsTabla1.addCell(new Paragraph("Clave Unidad",fRegular));
@@ -189,32 +246,40 @@ public class PdfGenerator {
         
         
 //        OBSERVACIONES TABLA2
-        int n=3;
-        PdfPTable obsTabla2 = new PdfPTable(8);
+        int n = Integer.parseInt(String.valueOf(numeroConceptos.get(0).get("n")));
+        PdfPTable obsTabla2 = new PdfPTable(9);
         obsTabla2.getDefaultCell().setBorderWidth(0f);        
         obsTabla2.setWidthPercentage(100);
         // Set First row as header
         obsTabla2.setHeaderRows(n-1);//Este numero es el numero de filas que agregaras -1 OJO DEBES AGREGAR TODAS LAS FILAS Y COLUMNAS PARA QUE JALE
         // Add the data
+        System.out.println("NUMERO DE CONCEPTOS: " + String.valueOf(numeroConceptos.get(0).get("n")));
         for (int i = 0; i < n; i++) {            
-            obsTabla2.addCell(new Paragraph("000000000000",fRegularGris));
-            obsTabla2.addCell(new Paragraph("1.00",fRegularGris));
-            obsTabla2.addCell(new Paragraph("H87",fRegularGris));
-            obsTabla2.addCell(new Paragraph("Pieza",fRegularGris));
-            obsTabla2.addCell(new Paragraph("Pequeña descripción del producto",fRegularGris));
-            obsTabla2.addCell(new Paragraph("$500.00 ",fRegularGris));
-            obsTabla2.addCell(new Paragraph("$0.00",fRegularGris));
-            obsTabla2.addCell(new Paragraph("$500.00",fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Pr_Codigo_SAT")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Pr_Descripcion_Corta")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Fc_Cantidad_Control_1")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Un_Cve_Unidad")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Un_Descripcion")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Pr_Descripcion")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Fc_Precio_Lista")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Fc_Descuento_Importe")),fRegularGris));
+            obsTabla2.addCell(new Paragraph(String.valueOf(facturaParteDos.get(i).get("Fc_Precio_Lista_Importe")),fRegularGris));
         }
         
-                
+        PdfPTable tFolioFiscalCuentas = new PdfPTable(2);
+        tFolioFiscalCuentas.getDefaultCell().setBorderWidth(0f);        
+        tFolioFiscalCuentas.setWidthPercentage(100);
+        tFolioFiscalCuentas.addCell(pFolioFiscal);
+        tFolioFiscalCuentas.addCell(pCuentas);
         document.add(lubriagsa);
         document.add(enter);
         document.add(table);
         document.add(enter);
         document.add(factura);
         document.add(line);
-        document.add(pFolioFiscal);
+        
+        document.add(tFolioFiscalCuentas);
+        
         document.add(line2);
         document.add(pDatosCliente);
         document.add(tDatosCliente);
@@ -227,7 +292,7 @@ public class PdfGenerator {
         document.add(line2);
         document.add(obsTabla2);
         document.close();
-        
+        return unixDate + "";
     }    
     public PdfPCell generatePhrases(String title, String value){
         PdfPCell cell = new PdfPCell();
@@ -241,12 +306,12 @@ public class PdfGenerator {
         return cell;        
     }
     
-    public PdfPCell paisEstadoCell(){
+    public PdfPCell paisEstadoCell(String estado, String pais){
         Phrase ph = new Phrase();
         ph.add(new Chunk("Estado"+"    ",fRegular));
-        ph.add(new Chunk("Jalisco",fRegularGris));
+        ph.add(new Chunk(estado,fRegularGris));
         ph.add(new Chunk("    "+"País"+"    ",fRegular));
-        ph.add(new Chunk("México",fRegularGris));
+        ph.add(new Chunk(pais ,fRegularGris));
         PdfPCell cell = new PdfPCell();        
         cell.addElement(new Phrase(ph));
         cell.setUseVariableBorders(true);
