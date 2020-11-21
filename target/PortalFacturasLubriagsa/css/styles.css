@@ -329,5 +329,4 @@ body {
     font-family: var(--body-font);
     font-weight: var(--bold-weight);
     padding: var(--padding-botones-generales);
-    border-radius: 4px;
 }

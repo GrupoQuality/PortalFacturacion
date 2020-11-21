@@ -75,8 +75,7 @@ select {
 
 /* TABLA */
 .table {    
-/*    margin: auto;
-    width: var(--table-facturas-width); */
+    margin-top: calc(var(--margin)*3);
     width: 100%;
 }
 .table #tabla-facturas{
@@ -163,6 +162,13 @@ td, th, tr {
     font-size: 4vh;
     font-weight: var(--bold-weight);
 }
+.btn {
+    border-radius: 2px;
+}
 legend {
     width: auto;
+}
+
+#open-modal-pdf {
+    display: none;
 }

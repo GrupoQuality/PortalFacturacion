@@ -21,7 +21,7 @@
         <div class="left">
             <i class="icon-menu" id="btn-menu"></i>
             <a href="home.do">  
-                <h1 style="">PORTAL FACTURACION</h1>
+                <h1 style="h1">PORTAL FACTURACION</h1>
             </a>
         </div>
         <div class="right">

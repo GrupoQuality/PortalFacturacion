@@ -15,7 +15,7 @@
 <body>
     <header class="main-header">
         <div class="left">
-            <h1>PORTAL FACTURACION</h1>
+            <h1 class="h1">PORTAL FACTURACION</h1>
         </div>
         <div class="right">
         </div>

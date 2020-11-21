@@ -11,6 +11,7 @@ import com.itextpdf.text.Chunk;
 import java.io.FileOutputStream;
  
 import com.itextpdf.text.Document;
+//import com.itextpdf.layout.;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -35,6 +36,8 @@ public class PdfGenerator {
         final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/";
 //        final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/pdf.pdf";
         
+        float afterSpacing = 5f;
+        float beforeSpacing = 5f;
         BaseFont brandonBold;
         BaseFont brandonMedium;
         BaseFont brandonBlack;
@@ -48,14 +51,15 @@ public class PdfGenerator {
         
         Font fTitleTable = new Font(Font.FontFamily.TIMES_ROMAN,10,Font.BOLD);
         Font fContentTable = new Font(Font.FontFamily.HELVETICA,8,Font.NORMAL);
-        
-        Font fBold = FontFactory.getFont(fontsPath+"/Brandon_bld.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
-        Font fMedium = FontFactory.getFont(fontsPath+"/Brandon_med.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
-        Font fRegularGris = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, gris);
-        Font fBlack = FontFactory.getFont(fontsPath+"/Brandon_blk.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
-        Font fLight = FontFactory.getFont(fontsPath+"/Brandon_light.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
-        Font fRegular = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
-        Font fThin = FontFactory.getFont(fontsPath+"/Brandon_thin.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 10, Font.NORMAL, azul);
+        int fontSize = 9;
+        Font fBold = FontFactory.getFont(fontsPath+"/Brandon_bld.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fMedium = FontFactory.getFont(fontsPath+"/Brandon_med.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fRegularGris = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, gris);
+        Font fBlack = FontFactory.getFont(fontsPath+"/Brandon_blk.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fLight = FontFactory.getFont(fontsPath+"/Brandon_light.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fRegular = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fThin = FontFactory.getFont(fontsPath+"/Brandon_thin.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
+        Font fRegularGrisSmall = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 6, Font.NORMAL, gris);
     
     public Paragraph probandoFonts(){
         Paragraph f = new Paragraph();
@@ -74,7 +78,7 @@ public class PdfGenerator {
         return f;
     }
     
-    public String buildPdf(List<Map<String,Object>> facturaParteUno, List<Map<String,Object>> numeroConceptos, List<Map<String,Object>> facturaParteDos) throws DocumentException, BadElementException, IOException{System.out.println("entro a buildpdf");
+    public String buildPdf(List<Map<String,Object>> facturaParteUno, List<Map<String,Object>> numeroConceptos, List<Map<String,Object>> facturaParteDos, List<Map<String,Object>> facturaParteTres, List<Map<String,Object>> facturaParteCuatro) throws DocumentException, BadElementException, IOException{System.out.println("entro a buildpdf");
         //VARIABLES PARA LLENAR LA FACTURA           
         String emRazonSocial = String.valueOf(facturaParteUno.get(0).get("Em_Razon_Social")),
                emRFC= String.valueOf(facturaParteUno.get(0).get("Em_R_F_C")),
@@ -106,22 +110,22 @@ public class PdfGenerator {
                fecha = String.valueOf(facturaParteUno.get(0).get("Fc_Fecha"));
         
         System.out.println("emRazon--> " + emRazonSocial);
-             
-               
-    
-//        String folioFiscal = "1345324";//prueba
-//        int sucursal = 001;
-        float afterSpacing = 10f;
-        float beforeSpacing = 10f;
-        
-//        CONSULTAR LA BASE DE DATOS        
-        
         //Crear imagen
         Image image1 = Image.getInstance(logo);
         
-            Paragraph lubriagsa = new Paragraph();
-            lubriagsa.add(new Chunk(emRazonSocial+"\n" +
-            emRFC, fBlack));
+        Paragraph lubriagsa = new Paragraph();
+        lubriagsa.add(new Chunk(emRazonSocial+"\n",fBlack));
+        lubriagsa.add(new Chunk(emRFC, fBlack));
+        lubriagsa.setExtraParagraphSpace(0f);
+            
+        PdfPTable tLubriagsa = new PdfPTable(1);
+        tLubriagsa.getDefaultCell().setBorderWidth(0f);        
+        tLubriagsa.setWidthPercentage(100);        
+        PdfPCell cLubriagsa = new PdfPCell(lubriagsa);
+        cLubriagsa.setBorderColor(BaseColor.WHITE);
+        tLubriagsa.addCell(cLubriagsa);
+        tLubriagsa.setSpacingAfter(afterSpacing);
+        
         
         Paragraph enter = new Paragraph();
         enter.add("\n");
@@ -131,6 +135,7 @@ public class PdfGenerator {
         factura.add(new Chunk("FACTURA",fRegular));
         factura.setAlignment(Element.ALIGN_RIGHT);
         factura.setSpacingAfter(5f);
+        factura.setSpacingBefore(beforeSpacing);
         
         
         Paragraph pFolioFiscal = new Paragraph();
@@ -158,7 +163,7 @@ public class PdfGenerator {
         
         Paragraph observaciones = new Paragraph();
         observaciones.add(new Chunk("OBSERVACIONES",fRegular));
-        observaciones.setSpacingAfter(afterSpacing);
+        observaciones.setSpacingAfter(afterSpacing*2);
         observaciones.setSpacingBefore(beforeSpacing);
         observaciones.setAlignment(Element.ALIGN_LEFT);
         
@@ -169,7 +174,7 @@ public class PdfGenerator {
         scDireccion1 + "\n" +
         scDireccion2 + "\n" +
         scDireccion3 + "\n" +
-        "Tel.    "+telefono1+"/"+telefono2+"/"+telefono3+"/",fRegular));
+        "Tel.    "+telefono1+" / "+telefono2+" / "+telefono3,fRegular));
         
         long unixDate = 0;
         unixDate = Instant.now().getEpochSecond();
@@ -183,11 +188,12 @@ public class PdfGenerator {
         PdfPTable table = new PdfPTable(3);
         table.getDefaultCell().setBorderWidth(0f);        
         table.setWidthPercentage(100);
-        // Set First row as header
-        table.setHeaderRows(0);//Este numero es el numero de filas que agregaras -1 OJO DEBES AGREGAR TODAS LAS FILAS Y COLUMNAS PARA QUE JALE
-        // Add the data
-        table.addCell(direccionLubriagsa);
-        table.addCell("");
+        table.setHeaderRows(0);
+        PdfPCell cSucursal = new PdfPCell(direccionLubriagsa);
+        cSucursal.setBorderColor(BaseColor.WHITE);
+        cSucursal.setColspan(2);    
+//        cSucursal.setHorizontalAlignment(2);
+        table.addCell(cSucursal);
         table.addCell(image1);
         
 //        SEPARADOR
@@ -271,26 +277,157 @@ public class PdfGenerator {
         tFolioFiscalCuentas.setWidthPercentage(100);
         tFolioFiscalCuentas.addCell(pFolioFiscal);
         tFolioFiscalCuentas.addCell(pCuentas);
-        document.add(lubriagsa);
-        document.add(enter);
+         
+
+        PdfPTable tablaImportes = new PdfPTable(5);
+        tablaImportes.getDefaultCell().setBorderWidth(0f);        
+        tablaImportes.setWidthPercentage(100);
+        tablaImportes.setHeaderRows(0);
+        
+//        VARIABLES INFORMACION PAGO Y SUMAS
+        String totalConLetra = String.valueOf(facturaParteTres.get(0).get("totalConLetra")),
+        metodo_pago = String.valueOf(facturaParteTres.get(0).get("metodo_pago")),
+        forma_pago = String.valueOf(facturaParteTres.get(0).get("formaPago")),
+        Cd_Numero_Cuenta_Pago = String.valueOf(facturaParteTres.get(0).get("Cd_Numero_Cuenta_Pago")),
+        suma = String.valueOf(facturaParteTres.get(0).get("suma")),
+        descuento = String.valueOf(facturaParteTres.get(0).get("descuento")),
+        subtotal = String.valueOf(facturaParteTres.get(0).get("subtotal")),
+        iva = String.valueOf(facturaParteTres.get(0).get("iva")),
+        total = String.valueOf(facturaParteTres.get(0).get("total"));
+
+        Paragraph p = new Paragraph(infoPago(totalConLetra, metodo_pago, forma_pago, Cd_Numero_Cuenta_Pago));
+//        PdfPCell infoPago = new PdfPCell(infoPago(totalConLetra, metodo_pago, forma_pago, Cd_Numero_Cuenta_Pago));
+        PdfPCell infoPago = new PdfPCell(p);
+        infoPago.setBorderColor(BaseColor.WHITE);
+        infoPago.setColspan(3);
+        infoPago.setExtraParagraphSpace(3f);
+        tablaImportes.addCell(infoPago);
+        
+        Phrase sum = sumas(suma, descuento, subtotal, iva, total);
+        PdfPCell sumas = new PdfPCell(sum);
+        sumas.setBorderColor(BaseColor.WHITE);
+        sumas.setColspan(2);    
+        sumas.setHorizontalAlignment(2);
+        sumas.setExtraParagraphSpace(3f);
+        tablaImportes.addCell(sumas);
+        
+        Paragraph aviso = new Paragraph("No se aceptan devoluciones en efectivo\n",fRegular);
+        aviso.setAlignment(1);
+        
+//        VARIABLES ULTIMA PARTE
+        String selloDigital = String.valueOf(facturaParteCuatro.get(0).get("selloDigital")),
+               selloSAT = String.valueOf(facturaParteCuatro.get(0).get("selloSAT")),
+               cadenaOriginal = String.valueOf(facturaParteCuatro.get(0).get("cadenaOriginal")),
+               certificado = String.valueOf(facturaParteCuatro.get(0).get("certificado")),
+               fFecha = String.valueOf(facturaParteCuatro.get(0).get("fecha")),
+               fDate = String.valueOf(facturaParteCuatro.get(0).get("date"));
+        
+        Paragraph pSelloDigital = new Paragraph("Sello Digital del CFDI: \n", fRegular);
+        pSelloDigital.add(new Chunk(selloDigital, fRegularGrisSmall));
+        pSelloDigital.add(new Chunk("\nSello del SAT:\n"));
+        pSelloDigital.add(new Chunk(selloSAT, fRegularGrisSmall));
+
+        PdfPTable tSellos = new PdfPTable(1);
+        tSellos.getDefaultCell().setBorderWidth(0f);        
+        tSellos.setWidthPercentage(100);
+        tSellos.setHeaderRows(0); 
+        PdfPCell cSellos = new PdfPCell(pSelloDigital);
+        cSellos.setExtraParagraphSpace(afterSpacing);
+        cSellos.setBorder(0);
+        tSellos.addCell(cSellos);
+        
+        Paragraph pCadenaOriginal = new Paragraph();
+        pCadenaOriginal.add(new Chunk("Cadena original del complemento de certificación del SAT:\n", fRegular));
+        pCadenaOriginal.add(new Chunk(cadenaOriginal, fRegularGrisSmall));
+        
+        Paragraph pFirma = new Paragraph();
+        pFirma.add(new Chunk("_____________________________________\n", fRegularGrisSmall));
+        pFirma.add(new Chunk("FIRMA DE CONFORMIDAD\n", fRegularGrisSmall));
+        
+        PdfPTable tQr = new PdfPTable(10);
+        tQr.getDefaultCell().setBorderWidth(0f);        
+        tQr.setWidthPercentage(100);
+        tQr.setHeaderRows(0); 
+        PdfPCell cQr = new PdfPCell(new Paragraph(""));
+        cQr.setColspan(1);
+        PdfPCell cCadenaOriginal = new PdfPCell(pCadenaOriginal);
+        cCadenaOriginal.setColspan(7);
+        cCadenaOriginal.setBorder(0);
+        PdfPCell cFirma = new PdfPCell(pFirma);
+        cFirma.setHorizontalAlignment(1);
+        cFirma.setPaddingTop(28f);
+        cFirma.setColspan(2);
+        cFirma.setBorder(0);
+        tQr.addCell(cQr);
+        tQr.addCell(cCadenaOriginal);
+        tQr.addCell(cFirma);
+        
+        Paragraph pCertificado = new Paragraph();
+        pCertificado.add(new Chunk("\nNo de serie del certificado del SAT:    ", fRegular));
+        pCertificado.add(new Chunk(certificado+"\n", fRegularGris));
+        pCertificado.add(new Chunk("\"Este documento es una representación impresa de un CFDI\"\n", fRegular));
+        
+        Paragraph pFechaHora = new Paragraph();
+        pFechaHora.add(new Chunk("\nFecha y hora de certificación:    ", fRegular));
+        pFechaHora.add(new Chunk(fFecha+"\n", fRegularGris));
+        pFechaHora.add(new Chunk("En caso de cheque devuelto se cargará el 20%", fRegular));
+        
+        Paragraph pL1 = new Paragraph();
+        pL1.add(new Chunk("POR ESTE PAGARE RECONOZCO Y ME OBLIGO INCONDICIONALMENTE EL DIA:    ", fRegularGrisSmall));
+        pL1.add(new Chunk(fDate, fRegularGrisSmall));
+        pL1.add(new Chunk("\nA LA ORDEN DE " + emRazonSocial + " EN ESTA CIUDAD LA CANTIDAD DE    $" + total + "    " + totalConLetra , fRegularGrisSmall));
+        pL1.add(new Chunk("\nVALOR DE LA MERCANCIA QUE HE RECIBIDO A MI ENTERA SATISFACCION EN CASO DE MORA PAGARE(MOS) INTERESES A RAZON DE 5% MENSUAL ESTE PAGARE ES MERCANTIL Y ESTA REGIDO POR LA LEY GENERAL DE TITULOS Y OPERACIONES DE CREDITO EN SU ARTICULO 173 PARTE FINAL Y ARTICULOS CORRELATIVOS, POR NO SER PAGARE.",fRegularGrisSmall));
+        
+        PdfPTable tLeyenda = new PdfPTable(1);
+        tLeyenda.getDefaultCell().setBorderWidth(0f);        
+        tLeyenda.setWidthPercentage(100);
+        tLeyenda.setHeaderRows(0); 
+        tLeyenda.addCell(pL1);
+        
+        PdfPTable tFin = new PdfPTable(2);
+        tFin.getDefaultCell().setBorderWidth(0f);        
+        tFin.setWidthPercentage(100);
+        tFin.setHeaderRows(0);         
+        PdfPCell cNumeroCertificado = new PdfPCell(pCertificado);
+        cNumeroCertificado.setBorder(0);
+        cNumeroCertificado.setExtraParagraphSpace(2f);
+        PdfPCell cFechaHora = new PdfPCell(pFechaHora);
+        cFechaHora.setBorder(0);
+        cFechaHora.setExtraParagraphSpace(2f);
+        tFin.addCell(cNumeroCertificado);
+        tFin.addCell(cFechaHora);
+        
+        PdfPTable tFooter = new PdfPTable(1);
+        tFooter.getDefaultCell().setBorderWidth(0f);        
+        tFooter.setWidthPercentage(100);
+        tFooter.setHeaderRows(3); 
+        tFooter.addCell(tSellos);
+        tFooter.addCell(tQr);
+        tFooter.addCell(tFin);
+        tFooter.addCell(tLeyenda);
+        
+        document.add(tLubriagsa);
         document.add(table);
-        document.add(enter);
         document.add(factura);
-        document.add(line);
-        
-        document.add(tFolioFiscalCuentas);
-        
+        document.add(line);        
+        document.add(tFolioFiscalCuentas);         
         document.add(line2);
         document.add(pDatosCliente);
         document.add(tDatosCliente);
-        document.add(enter);
-        document.add(enter);
-        document.add(line2);
-        document.add(observaciones);
-        
+        document.add(observaciones);        
         document.add(obsTabla1);
         document.add(line2);
         document.add(obsTabla2);
+        document.add(enter);
+        document.add(tablaImportes);
+        document.add(aviso);
+//        document.add(tSellos);
+//        document.add(tQr);
+////        document.add(enter);
+//        document.add(tFin);
+//        document.add(tLeyenda);
+        document.add(tFooter);
+        document.add(enter);
         document.close();
         return unixDate + "";
     }    
@@ -304,6 +441,43 @@ public class PdfGenerator {
         cell.setBorderColor(BaseColor.WHITE);
         cell.setBorderColorBottom(azul);
         return cell;        
+    }
+
+    public Phrase infoPago(String totalConLetra, String metodo_pago, String forma_pago, String Cd_Numero_Cuenta_Pago){
+        Phrase ph = new Phrase();
+        
+        ph.add(new Chunk(totalConLetra + "\n",fRegularGris));
+        
+        ph.add(new Chunk("Método de pago:    ",fRegular));
+        ph.add(new Chunk(metodo_pago + "\n", fRegularGris));
+
+        ph.add(new Chunk("Forma de pago:    ",fRegular));
+        ph.add(new Chunk(forma_pago + "\n", fRegularGris));
+
+        ph.add(new Chunk("Cuenta de pago:    ",fRegular));
+        ph.add(new Chunk(Cd_Numero_Cuenta_Pago + "\n", fRegularGris));
+
+        ph.add(new Chunk("Toda devolución y/o cambios de producto tienen una penalización del 20%.",fRegular));
+        return ph;        
+    }
+
+    public Phrase sumas(String suma, String descuento, String subtotal, String iva, String total) {
+        Phrase ph = new Phrase();
+        ph.add(new Chunk("Suma:    $",fRegular));
+        ph.add(new Chunk(suma + "\n", fRegularGris));
+
+        ph.add(new Chunk("Descuento:    $",fRegular));
+        ph.add(new Chunk(descuento + "\n", fRegularGris));
+
+        ph.add(new Chunk("Subtotal:    $",fRegular));
+        ph.add(new Chunk(subtotal + "\n\n", fRegularGris));
+
+        ph.add(new Chunk("IVA:    $",fRegular));
+        ph.add(new Chunk(iva + "\n", fRegularGris));
+
+        ph.add(new Chunk("Total:    $",fRegular));
+        ph.add(new Chunk(total + "\n", fRegularGris));
+        return ph;        
     }
     
     public PdfPCell paisEstadoCell(String estado, String pais){

@@ -3,8 +3,10 @@
 <html lang="en">
 
 <head>
+    <!--hola-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--PARA QUE SE RECARGUEN LOS ESTILOS-->
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <!-- bootstrap jquery -->
@@ -15,7 +17,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">-->
     
-    <script src="${pageContext.request.contextPath}/js/utileria.js"></script>
     <!--PDF-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <!--<script src="${pageContext.request.contextPath}/js/pdfGenerator.js" type="module"></script>-->
@@ -26,6 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+    
     
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/icons.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
@@ -39,7 +41,7 @@
         <div class="left">
             <i class="icon-menu" id="btn-menu"></i>
             <a href="home.do">
-                <h1>PORTAL FACTURACION</h1>
+                <h1 class="h1">PORTAL FACTURACION</h1>
             </a>
         </div>
         <div class="right">
@@ -72,15 +74,15 @@
                     <div class="up">
                         <div class="anio">
                             Año:
-                            <input type="number" value="2020" min="2000" max="2020" step="1">
+                            <input id ="anio" type="number" value="2020" min="2000" max="2020" step="1">
                         </div>
                         <div class="mes">
                             Mes:
-                            <select name="anio-mes" id="anio-mes" class="select"></select>
+                            <select name="anio-mes" id="mes" class="select"></select>
                         </div>
                         <div class="dia">
                             Día:
-                            <input type="number" value="1" min="1" max="31" step="1">
+                            <input id ="dia" type="number" value="" min="1" max="31" step="1">
                         </div>
                         <div class="hora-inicial">
                             Hora inicial:
@@ -102,7 +104,7 @@
                     </div>
                     <div class="down">
                         <a href="#open-modal-uno">
-                            <button class="boton-generico" id="btn-search-filtros">Buscar
+                            <button class="btn boton-generico" id="btn-search-filtros" OnClick="get()">Buscar
                             </button>
                         </a>
                     </div>
@@ -110,8 +112,8 @@
             </div>
             <!--Fin filtros -->
             
-            <button id="btn_guardar" class="boton-generico" OnClick="get()"> Ver </button>   
-            <button id="btn_generate_pdf" class="boton-generico" OnClick="generatePdf()"> Generar pdf</button> 
+<!--            <button id="btn_guardar" class="btn boton-generico" OnClick="get()"> Ver </button>   
+            <button id="btn_generate_pdf" class="btn boton-generico" OnClick="generatePdf()"> Generar pdf</button> -->
             <div class="table">
                 <table id="tabla-facturas" class="table-bordered table-hover">
                     <thead>
@@ -184,18 +186,16 @@
             </div>
             <!--fin tabla-->
             <div class="facturas-seleccionadas">
-                <button class="boton-generico">Enviar facturas
+                <button class="btn boton-generico">Enviar facturas
                 </button>
-                <button class="boton-generico">PDF
+                <button class="btn boton-generico">PDF
                 </button>
-                <button class="boton-generico">XML
+                <button class="btn boton-generico">XML
                 </button>
             </div>
             
             <!-- Button to Open the Modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-              Open modal
-            </button>
+            <button id="open-modal-pdf" type="button" class="btn boton-generico" data-toggle="modal" data-target="#myModal">            </button>
 
             <!-- The Modal -->
             <div class="modal" id="myModal">
@@ -205,23 +205,15 @@
                   <!-- Modal Header -->
                   <div class="modal-header">
                     <h4 class="modal-title">Pdf generado</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn close" data-dismiss="modal">&times;</button>
                   </div>
 
                   <!-- Modal body -->
-                  <div class="d-flex flex-column align-items-center" id="modal-body">
-                      <div class="d-flex flex-column align-items-center" id="pdf-container">
-                    <object data="${pageContext.request.contextPath}/pdfs/pdf.pdf" type="application/pdf" width="100%" height="400">
-                        alt : <a href="test.pdf">pdf.pdf</a>
-                    </object>
-                    </div>  
+                    <div class="d-flex flex-column align-items-center" id="modal-body">
+<!--                      <div class="d-flex flex-column align-items-center" id="pdf-container">                    
+                        </div>  -->
 
-                    <div id="botones-factura">
-                        <a href="${pageContext.request.contextPath}/pdfs/pdf.pdf" download rel="noopener noreferrer" target="_blank">
-                            <button  class="boton-generico" > PDF </button>   
-                        </a>
-                        <button  class="boton-generico" > XML </button>  
-                    </div>
+                    
                   </div>
 
                   <!-- Modal footer -->
@@ -232,11 +224,22 @@
                 </div>
               </div>
             </div>
+                            
+            <button id="borrar_pdf_btn" class="btn boton-generico" OnClick="borrarPdf()"> Borrarpdf </button>
+            
+            
+            
+            <div id="dialog" style="display:none"> 
+                <div> 
+                <iframe src=""></iframe> 
+                </div> 
+            </div>
         <!--fin contentenido-->
     </div>
     <!--fin pseudo body-->
             
     <script src="${pageContext.request.contextPath}/js/menu.js"></script>
+    <script src="${pageContext.request.contextPath}/js/utileria.js"></script>
 </body>
 
 </html>

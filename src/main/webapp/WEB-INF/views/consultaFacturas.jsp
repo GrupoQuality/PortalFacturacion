@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">-->
     
-    <script src="${pageContext.request.contextPath}/js/utileria.js"></script>
     <!--PDF-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
     <!--<script src="${pageContext.request.contextPath}/js/pdfGenerator.js" type="module"></script>-->
@@ -75,15 +74,15 @@
                     <div class="up">
                         <div class="anio">
                             Año:
-                            <input type="number" value="2020" min="2000" max="2020" step="1">
+                            <input id ="anio" type="number" value="2020" min="2000" max="2020" step="1">
                         </div>
                         <div class="mes">
                             Mes:
-                            <select name="anio-mes" id="anio-mes" class="select"></select>
+                            <select name="anio-mes" id="mes" class="select"></select>
                         </div>
                         <div class="dia">
                             Día:
-                            <input type="number" value="" min="1" max="31" step="1">
+                            <input id ="dia" type="number" value="" min="1" max="31" step="1">
                         </div>
                         <div class="hora-inicial">
                             Hora inicial:
@@ -227,11 +226,20 @@
             </div>
                             
             <button id="borrar_pdf_btn" class="btn boton-generico" OnClick="borrarPdf()"> Borrarpdf </button>
+            
+            
+            
+            <div id="dialog" style="display:none"> 
+                <div> 
+                <iframe src=""></iframe> 
+                </div> 
+            </div>
         <!--fin contentenido-->
     </div>
     <!--fin pseudo body-->
             
     <script src="${pageContext.request.contextPath}/js/menu.js"></script>
+    <script src="${pageContext.request.contextPath}/js/utileria.js"></script>
 </body>
 
 </html>
