@@ -5,8 +5,11 @@
  */
 package com.mx.proyecto.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -17,25 +20,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class ConsultaFactura {
     private DataSource dataSource;
     
-    public List<Map<String,Object>> selectInfoFacturas(){System.out.println("entro al dao");
-        String query = "select\n" +
-        "	f.fc_factura as 'Folio_Fiscal',\n" +
-        "	f.fc_documento+c.cl_cve_cliente as 'RFC Emisor',\n" +
-        "	c.cl_r_f_c as 'RFC del cliente',\n" +
-        "	c.cl_apellido_paterno+c.cl_apellido_materno+c.cl_nombres as 'Nombre del cliente',\n" +
-        "	f.fc_serie as 'Serie de facturacion',\n" +
-        "	f.fecha_alta as 'Fecha y hora de Emision',\n" +
-        "	sum(f.fc_precio_neto) as Total,\n" +
-        "	f.es_cve_estado as Estado\n" +
-        "from factura f\n" +
-        "inner join cliente c\n" +
-        "on f.cl_cve_cliente = c.cl_cve_cliente\n" +
-        "and f.Es_Cve_Estado = 'AC'\n" +
-        "group by f.fc_factura, (f.fc_documento+c.cl_cve_cliente), c.cl_r_f_c,(c.cl_apellido_paterno+c.cl_apellido_materno+c.cl_nombres),f.fecha_alta,f.es_cve_estado,f.fc_serie\n" +
-        "order by f.fc_factura asc";
+    public List<Map<String,Object>> selectInfoFacturas(String anio, String mes, String dia, String horaInicio, String horaFin){
+        String query = "execute dbo.consultarFacturas "+anio+", "+ mes +", " +dia+ ", '"+horaInicio+ "', '"+horaFin+ "'";
         System.out.println(query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String, Object>> facturas = jdbcTemplate.queryForList(query);
+        close();
         return facturas;        
     }
     
@@ -86,6 +76,7 @@ public class ConsultaFactura {
         "and f.Fc_Factura = '" + fc_factura + "';";
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String,Object>> parteUnoFactura = jdbcTemplate.queryForList(query);
+        close();
         return parteUnoFactura;        
     }
     
@@ -109,6 +100,7 @@ public class ConsultaFactura {
 //        System.out.println(query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String,Object>> parteDosFactura = jdbcTemplate.queryForList(query);
+        close();
         return parteDosFactura;        
     }
 
@@ -136,6 +128,7 @@ public class ConsultaFactura {
 //        System.out.println(query);
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String,Object>> parteTresFactura = jdbcTemplate.queryForList(query);
+        close();
         return parteTresFactura;        
     }
     
@@ -146,6 +139,7 @@ public class ConsultaFactura {
         "where Fc_Factura = '"+ fc_factura + "';";
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String,Object>> nConceptos = jdbcTemplate.queryForList(query);
+        close();
         return nConceptos;        
     }
     
@@ -164,6 +158,7 @@ public class ConsultaFactura {
         "and Fc_Factura = '"+ fc_factura + "';";
         JdbcTemplate jdbcTemplate = new JdbcTemplate (dataSource);
         List<Map<String,Object>> consultaCuatro = jdbcTemplate.queryForList(query);
+        close();
         return consultaCuatro;   
     }
     
@@ -176,5 +171,12 @@ public class ConsultaFactura {
         this.dataSource = dataSource;
     }
     
+    public void close(){        
+        try {
+            dataSource.getConnection().close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaFactura.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
 }

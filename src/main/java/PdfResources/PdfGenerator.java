@@ -4,6 +4,12 @@
  * and open the template in the editor.
  */
 package PdfResources;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
@@ -24,14 +30,24 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.EnumMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class PdfGenerator {
         final String fontsPath = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/fonts";
+        final String resourcesPath = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\img/";
         final String logo = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\img/logo-lubriagsa.png";
         final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/";
 //        final String dest = "C:\\Users\\erick\\Documents\\Acceso carpetas\\Practicas\\Portal clientes\\Portal de facturación\\spring proyect\\PortalFacturasLubriagsa\\src\\main\\webapp\\pdfs/pdf.pdf";
@@ -60,25 +76,9 @@ public class PdfGenerator {
         Font fRegular = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
         Font fThin = FontFactory.getFont(fontsPath+"/Brandon_thin.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, fontSize, Font.NORMAL, azul);
         Font fRegularGrisSmall = FontFactory.getFont(fontsPath+"/Brandon_reg.otf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 6, Font.NORMAL, gris);
-    
-    public Paragraph probandoFonts(){
-        Paragraph f = new Paragraph();
-        f.add(new Chunk("Hola mundo (bold)\n", fBold));
-        f.add(new Chunk("Hola mundo (medium)\n",fMedium));
-        f.add(new Chunk("Hola mundo (black)\n",fBlack));
-        f.add(new Chunk("Hola mundo (light)\n",fLight));
-        f.add(new Chunk("Hola mundo (regular)\n",fRegular));
-        f.add(new Chunk("Hola mundo (thin)\n",fThin));    
-        f.add(new Chunk("HOLA MUNDO (bold)\n", fBold));
-        f.add(new Chunk("HOLA MUNDO (medium)\n",fMedium));
-        f.add(new Chunk("HOLA MUNDO (black)\n",fBlack));
-        f.add(new Chunk("HOLA MUNDO (light)\n",fLight));
-        f.add(new Chunk("HOLA MUNDO (regular)\n",fRegular));
-        f.add(new Chunk("HOLA MUNDO (thin)\n",fThin));    
-        return f;
-    }
-    
+
     public String buildPdf(List<Map<String,Object>> facturaParteUno, List<Map<String,Object>> numeroConceptos, List<Map<String,Object>> facturaParteDos, List<Map<String,Object>> facturaParteTres, List<Map<String,Object>> facturaParteCuatro) throws DocumentException, BadElementException, IOException{System.out.println("entro a buildpdf");
+        
         //VARIABLES PARA LLENAR LA FACTURA           
         String emRazonSocial = String.valueOf(facturaParteUno.get(0).get("Em_Razon_Social")),
                emRFC= String.valueOf(facturaParteUno.get(0).get("Em_R_F_C")),
@@ -109,7 +109,21 @@ public class PdfGenerator {
                tipoCambio = String.valueOf(facturaParteUno.get(0).get("Fc_Tipo_Cambio")),
                fecha = String.valueOf(facturaParteUno.get(0).get("Fc_Fecha"));
         
-        System.out.println("emRazon--> " + emRazonSocial);
+        //GENERAR QR
+        String qrCodeText = folio;
+        String filePath = resourcesPath + "qr.png";
+        int size = 125;
+        String fileType = "png";
+        File qrFile = new File(filePath);
+        try {
+            createQRImage(qrFile, qrCodeText, size, fileType);
+        } catch (WriterException ex) {
+            Logger.getLogger(PdfGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //FIN GENERAR QR
+        
+        Image qr = Image.getInstance(filePath);
+        qr.scaleAbsolute(65f, 65f);
         //Crear imagen
         Image image1 = Image.getInstance(logo);
         
@@ -341,21 +355,22 @@ public class PdfGenerator {
         pCadenaOriginal.add(new Chunk(cadenaOriginal, fRegularGrisSmall));
         
         Paragraph pFirma = new Paragraph();
-        pFirma.add(new Chunk("_____________________________________\n", fRegularGrisSmall));
+        pFirma.add(new Chunk("__________________________________\n", fRegularGrisSmall));
         pFirma.add(new Chunk("FIRMA DE CONFORMIDAD\n", fRegularGrisSmall));
         
-        PdfPTable tQr = new PdfPTable(10);
+        PdfPTable tQr = new PdfPTable(12);
         tQr.getDefaultCell().setBorderWidth(0f);        
         tQr.setWidthPercentage(100);
         tQr.setHeaderRows(0); 
-        PdfPCell cQr = new PdfPCell(new Paragraph(""));
-        cQr.setColspan(1);
+        PdfPCell cQr = new PdfPCell(qr);
+        cQr.setColspan(2);
+        cQr.setBorder(0);
         PdfPCell cCadenaOriginal = new PdfPCell(pCadenaOriginal);
-        cCadenaOriginal.setColspan(7);
+        cCadenaOriginal.setColspan(8);
         cCadenaOriginal.setBorder(0);
         PdfPCell cFirma = new PdfPCell(pFirma);
         cFirma.setHorizontalAlignment(1);
-        cFirma.setPaddingTop(28f);
+        cFirma.setPaddingTop(48f);
         cFirma.setColspan(2);
         cFirma.setBorder(0);
         tQr.addCell(cQr);
@@ -421,11 +436,6 @@ public class PdfGenerator {
         document.add(enter);
         document.add(tablaImportes);
         document.add(aviso);
-//        document.add(tSellos);
-//        document.add(tQr);
-////        document.add(enter);
-//        document.add(tFin);
-//        document.add(tLeyenda);
         document.add(tFooter);
         document.add(enter);
         document.close();
@@ -492,6 +502,38 @@ public class PdfGenerator {
         cell.setBorderColor(BaseColor.WHITE);
         cell.setBorderColorBottom(azul);
         return cell;        
+    }
+    public void createQRImage(File qrFile, String qrCodeText, int size, String fileType)
+			throws WriterException, IOException {
+        // Create the ByteMatrix for the QR-Code that encodes the given String
+//        Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
+//        hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+        
+        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+         hints.put(EncodeHintType.MARGIN, 0);
+        
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix byteMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, size, size, hints);
+        // Make the BufferedImage that are to hold the QRCode
+        int matrixWidth = byteMatrix.getWidth();
+        BufferedImage image = new BufferedImage(matrixWidth, matrixWidth, BufferedImage.TYPE_INT_RGB);
+        image.createGraphics();
+
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, matrixWidth, matrixWidth);
+        // Paint and save the image using the ByteMatrix
+        graphics.setColor(Color.BLACK);
+
+        for (int i = 0; i < matrixWidth; i++) {
+                for (int j = 0; j < matrixWidth; j++) {
+                        if (byteMatrix.get(i, j)) {
+                                graphics.fillRect(i, j, 1, 1);
+                        }
+                }
+        }
+        ImageIO.write(image, fileType, qrFile);	        
     }
     
     public void bordersBottom(Cell cell){

@@ -74,7 +74,7 @@
                     <div class="up">
                         <div class="anio">
                             Año:
-                            <input id ="anio" type="number" value="2020" min="2000" max="2020" step="1">
+                            <input id ="anio" type="number" value="" min="2000" max="" step="1">
                         </div>
                         <div class="mes">
                             Mes:
@@ -226,6 +226,7 @@
             </div>
                             
             <button id="borrar_pdf_btn" class="btn boton-generico" OnClick="borrarPdf()"> Borrarpdf </button>
+            <a href="generarPdf2.do" target="_blank"> Prueba </a>
             
             
             

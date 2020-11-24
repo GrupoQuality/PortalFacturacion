@@ -2,26 +2,56 @@
 
       function get()
     {   
-        console.log("entro a get")
+        const vAnio = document.getElementById('anio');
+        const vMes = document.getElementById('mes');
+        const vDia = document.getElementById('dia');
+        
+        const vHoraInicialHora = document.getElementById('hora-inicial-hora');
+        const vHoraInicialMinuto = document.getElementById('hora-inicial-minuto');
+        const vHoraInicialSegundo = document.getElementById('hora-inicial-segundo');
+        
+        const vHoraFinalHora = document.getElementById('hora-final-hora');
+        const vHoraFinalMinuto = document.getElementById('hora-final-minuto');
+        const vHoraFinalSegundo = document.getElementById('hora-final-segundo');
+        
+        let anio = ''+vAnio.value;
+        let mes = '' + vMes.options[vMes.selectedIndex].value;
+        let dia = '' + vDia.value;
+        let horaInicio = vHoraInicialHora.options[vHoraInicialHora.selectedIndex].text + ':' + vHoraInicialMinuto.options[vHoraInicialMinuto.selectedIndex].text + ':' + vHoraInicialSegundo.options[vHoraInicialSegundo.selectedIndex].text;
+        let horaFinal = vHoraFinalHora.options[vHoraFinalHora.selectedIndex].text + ':' + vHoraFinalMinuto.options[vHoraFinalMinuto.selectedIndex].text + ':' + vHoraFinalSegundo.options[vHoraFinalSegundo.selectedIndex].text;
+        if (dia == ""){dia = 0;}
+        
+//       $('#example').dataTable( {
+//        "ajax": {
+//          "url": "data.json",
+//          "data": {
+//              "user_id": 451
+//          }
+//        }
+//      } );
         if(tabla!=null){tabla.destroy();}
             tabla=$('#tabla-facturas').DataTable( {searching: false,
-                "ajax": "consultarFacturas.do",
-                "columns": [{"render": function () {
-                           return '<input type="checkbox">'}},
-                    {data: "Folio_Fiscal"},
-                    {data: "RFC Emisor"},
-                    {data: "RFC del cliente"},
-                    {data: "Nombre del cliente"},
-                    {data: "Serie de facturacion"},
-                    {data: "Fecha y hora de Emision"},
-                    {data: "Total"},
-                    {data: "Estado"},
-                    {"render": function () {
-                           return '<i class="icon-doc-inv" id = "" onclick = ""></i>'}},
-                    {"render": function () {
-                           return '<button class="boton-table" onclick = "">PDF</button>\n\
-<button class="boton-table">XML</button>'}},
-                ]
+                "ajax": {
+                    "url": "consultarFacturas.do",
+                    "data": {anio:anio, mes:mes, dia:dia, horaInicio:horaInicio, horaFin:horaFinal}
+                },
+                "columns": [
+                                {"render": function () 
+                                {return '<input type="checkbox">'}},
+                                {data: "Folio_Fiscal"},
+                                {data: "RFC Emisor"},
+                                {data: "RFC del cliente"},
+                                {data: "Nombre del cliente"},
+                                {data: "Serie de facturacion"},
+                                {data: "Fecha y hora de Emision"},
+                                {data: "Total"},
+                                {data: "Estado"},
+                                {"render": function () {
+                                       return '<i class="icon-doc-inv" id = "" onclick = ""></i>'}},
+                                {"render": function () {
+                                       return '<button class="boton-table" onclick = "">PDF</button>\n\
+                                       <button class="boton-table">XML</button>'}},
+                           ]
         } );
         const table = document.getElementById('tabla-facturas');
         table.style.setProperty('width',`${100}%`)
@@ -51,14 +81,23 @@
             beforeSend : function(xhr) {
             },
             success : function(jsonResponse, textStatus, jqXHR) {
-                let pdf;
-                console.log("ya regreso del controlador")
-                const loadPdf =async(name)=>{
-                    pdf = await jsonResponse;
-                }
-                loadPdf(pdf).then(()=>{    
-                alert("antes de abrir la ventana");
-                window.open(pdf, "_blank");
+//                let pdf;
+//                console.log("ya regreso del controlador")
+//                const loadPdf =async(name)=>{
+//                    pdf = await jsonResponse;
+//                }
+//                loadPdf(pdf).then(()=>{    
+//                alert("antes de abrir la ventana");
+//                window.open(pdf, "_blank");
+//                
+
+
+
+
+
+
+
+          
 //                    let pdfWindow = window.open("")
 //                    pdfWindow.document.write(
 //                        "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
@@ -78,7 +117,7 @@
 //                link.click();
 //                    addOpenModalBody(pdfName);
 //                    borrarPdf(pdfName);
-                })
+//                })
             },
             error : function(jqXHR, textStatus, errorThrown) {
             }
@@ -186,7 +225,9 @@
             horaInicialSegundo.innerHTML += `<option value="${agregarCero(i)}">${agregarCero(i)}</option>`;
             horaFinalSegundo.innerHTML += `<option value="${agregarCero(i)}">${agregarCero(i)}</option>`;
         }
-        
+        //setear anio actual
+        anio.setAttribute('max', getYear());
+        anio.setAttribute('value', getYear());
     }
     function agregarCero(n){
         let string = ""+(n+1);
@@ -195,6 +236,10 @@
             return "0"+(n+1);
         else
             return (n+1)
+    }
+    function getYear(){
+        let f = new Date();
+        return f.getFullYear();
     }
     populateMonth();
     
